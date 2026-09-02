@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>39POS Enterprise — Setup Wizard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Window Drag Header -->
+  <header class="titlebar">
+    <div class="titlebar-brand">
+      <div class="titlebar-logo-mini">39</div>
+      <span>39POS Enterprise — Setup Wizard</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="win-btn" id="btn-minimize" title="Minimize">─</button>
+      <button class="win-btn close" id="btn-close" title="Close">✕</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    <!-- Stepper Navigation -->
+    <nav class="stepper-nav" id="stepper-nav">
+      <div class="step-dot-wrap">
+        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-line" id="line-1"></div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot-2">2</div>
+        <div class="step-line" id="line-2"></div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot-3">3</div>
+        <div class="step-line" id="line-3"></div>
+      </div>
+      <div class="step-dot-wrap">
+        <div class="step-dot" id="dot-4">4</div>
+      </div>
+    </nav>
+
+    <!-- STEP 1: Welcome & Overview -->
+    <section class="step-pane active" id="step-1">
+      <div class="neu-raised hero-card">
+        <div class="logo-orb">
+          <span>39</span>
+        </div>
+        <h1 class="app-title">39POS Enterprise</h1>
+        <div class="app-badge">
+          <span>●</span>
+          <span>Online Platform Edition — v1.0.0</span>
+        </div>
+        <div class="feature-grid">
+          <div class="neu-raised-sm feature-pill">
+            <div class="feature-icon">☁</div>
+            <div class="feature-title">Cloud Sync</div>
+            <div class="feature-desc">Real-time store & multi-branch synchronisation</div>
+          </div>
+          <div class="neu-raised-sm feature-pill">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-title">Ultra Fast POS</div>
+            <div class="feature-desc">Dual screen & hardware printer acceleration</div>
+          </div>
+          <div class="neu-raised-sm feature-pill">
+            <div class="feature-icon">🛡</div>
+            <div class="feature-title">Offline Safe</div>
+            <div class="feature-desc">Continuous sales even during network outage</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wizard-footer">
+        <span style="font-size: 11px; color: var(--text-muted);">Ready to configure installation</span>
+        <div class="btn-row">
+          <button class="neu-btn neu-btn-primary" id="btn-next-1">
+            <span>Continue</span>
+            <span>➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: Installation Settings & Destination -->
+    <section class="step-pane" id="step-2">
+      <div class="config-group">
+        <div class="config-label">
+          <span>Installation Directory</span>
+          <span style="font-weight: 500; color: var(--text-muted);">Local Program Files</span>
+        </div>
+        <div class="neu-inset path-input-row">
+          <input type="text" class="path-input" id="input-install-path" spellcheck="false" />
+          <button class="neu-btn neu-raised-sm" id="btn-browse" style="padding: 8px 16px; margin: 4px; font-size: 12px;">Browse...</button>
+        </div>
+      </div>
+
+      <div class="config-group">
+        <div class="config-label">
+          <span>Shortcut & Integration Options</span>
+        </div>
+        <div class="neu-raised-sm toggle-option" id="opt-desktop">
+          <div class="toggle-label">
+            <span>🖥</span>
+            <span>Create Desktop Shortcut</span>
+          </div>
+          <div class="neu-checkbox checked" id="chk-desktop">✓</div>
+        </div>
+        <div class="neu-raised-sm toggle-option" id="opt-startmenu">
+          <div class="toggle-label">
+            <span>📂</span>
+            <span>Create Start Menu Shortcut</span>
+          </div>
+          <div class="neu-checkbox checked" id="chk-startmenu">✓</div>
+        </div>
+        <div class="neu-raised-sm toggle-option" id="opt-autostart">
+          <div class="toggle-label">
+            <span>⚡</span>
+            <span>Launch automatically on Windows startup</span>
+          </div>
+          <div class="neu-checkbox" id="chk-autostart"></div>
+        </div>
+      </div>
+
+      <div class="neu-inset disk-meter">
+        <span>💾 Disk Space Required: <strong>~350 MB</strong></span>
+        <span id="disk-available">Available: <strong>Drive Ready</strong></span>
+      </div>
+
+      <div class="wizard-footer">
+        <button class="neu-btn" id="btn-back-2">
+          <span>Back</span>
+        </button>
+        <div class="btn-row">
+          <button class="neu-btn neu-btn-primary" id="btn-install-now">
+            <span>Install Now</span>
+            <span>⚡</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3: Animated Extraction & Progress -->
+    <section class="step-pane" id="step-3">
+      <div class="progress-container">
+        <div class="progress-orb">
+          <div class="progress-orb-inner" id="progress-percent">0%</div>
+        </div>
+
+        <div class="progress-track-wrapper">
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="neu-inset status-log-box">
+          <span style="color: var(--accent-cyan);">●</span>
+          <span id="status-log-text">Initializing extraction engine...</span>
+        </div>
+
+        <div class="neu-raised-sm" style="margin-top: 18px; padding: 12px 20px; text-align: center; width: 100%;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;" id="tip-title">⚡ High-Speed POS Ready</div>
+          <div style="font-size: 11px; color: var(--text-secondary);" id="tip-desc">39POS provides offline-resilient local SQLite and seamless cloud Postgres synchronisation.</div>
+        </div>
+      </div>
+
+      <div class="wizard-footer" style="justify-content: center;">
+        <span style="font-size: 11px; color: var(--text-muted);">Please wait while 39POS Enterprise is being configured...</span>
+      </div>
+    </section>
+
+    <!-- STEP 4: Success & Launch -->
+    <section class="step-pane" id="step-4">
+      <div class="success-container">
+        <div class="success-badge">✓</div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">Installation Completed!</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; max-width: 380px;">
+          39POS Enterprise (Online Platform v1.0.0) has been installed and configured successfully on your system.
+        </p>
+
+        <div class="neu-inset" style="padding: 10px 16px; font-size: 11px; font-family: monospace; color: var(--text-secondary); margin-bottom: 20px; max-width: 440px; word-break: break-all;" id="final-install-path">
+          C:\Users\...\AppData\Local\Programs\39POS Enterprise
+        </div>
+      </div>
+
+      <div class="wizard-footer">
+        <button class="neu-btn" id="btn-open-folder" style="font-size: 12px;">
+          <span>Open Folder</span>
+        </button>
+        <div class="btn-row">
+          <button class="neu-btn" id="btn-finish-close">
+            <span>Close</span>
+          </button>
+          <button class="neu-btn neu-btn-primary" id="btn-launch-app">
+            <span>🚀 Launch 39POS Now</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="installer.js"></script>
+</body>
+</html>

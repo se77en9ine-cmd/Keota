@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 39pos-enterprise-app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - JWT_SECRET=39pos-prod-super-secure-jwt-key-2026
+      - JWT_REFRESH_SECRET=39pos-prod-refresh-key-2026
+      - DATABASE_PATH=/app/database/39pos.sqlite
+    volumes:
+      - 39pos-data:/app/database
+      - 39pos-storage:/app/storage
+      - 39pos-backups:/app/backups
+      - 39pos-uploads:/app/uploads
+
+volumes:
+  39pos-data:
+  39pos-storage:
+  39pos-backups:
+  39pos-uploads:

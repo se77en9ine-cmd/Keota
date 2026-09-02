@@ -1,0 +1,63 @@
+appId: com.39pos.enterprise
+productName: 39POS Enterprise
+copyright: Copyright © 2026 39POS Enterprise
+
+directories:
+  output: D:/Google/Antigravity/POS/Deploy/Online Ver/V1
+
+files:
+  - electron/dist/**/*
+  - electron/resources/**/*
+  - server/dist/**/*
+  - shared/dist/**/*
+  - client/dist/**/*
+  - node_modules/**/*
+  - "!node_modules/**/test/**"
+  - "!node_modules/**/tests/**"
+  - "!node_modules/**/*.md"
+  - "!node_modules/**/*.map"
+  - "!node_modules/**/docs/**"
+  - "!**/node_modules/.cache/**"
+
+extraResources:
+  - from: server/dist
+    to: server
+    filter:
+      - "**/*"
+  - from: shared/dist
+    to: shared
+    filter:
+      - "**/*"
+  - from: client/dist
+    to: client-dist
+    filter:
+      - "**/*"
+  - from: electron/resources
+    to: resources
+    filter:
+      - "**/*"
+
+asar: false
+
+win:
+  icon: electron/resources/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: electron/resources/icon.ico
+  uninstallerIcon: electron/resources/icon.ico
+  installerHeaderIcon: electron/resources/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: 39POS Enterprise
+  artifactName: "39POS-Enterprise-Setup-${version}.${ext}"
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  perMachine: false
+  allowElevation: true
+  menuCategory: true

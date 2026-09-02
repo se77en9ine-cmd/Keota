@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>39POS Enterprise — Uninstaller</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="titlebar">
+    <div class="titlebar-brand">
+      <div class="titlebar-logo-mini">✕</div>
+      <span>39POS Enterprise — Uninstaller</span>
+    </div>
+    <button class="win-btn" id="btn-close" title="Close">✕</button>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    <!-- STEP 1: Confirm Removal -->
+    <section class="step-pane active" id="step-1">
+      <div class="neu-raised" style="padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 16px;">
+        <div class="warn-orb">🗑</div>
+        <h1 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">Uninstall 39POS Enterprise?</h1>
+        <p style="font-size: 13px; color: var(--text-secondary); max-width: 440px; margin-bottom: 14px;">
+          This will remove 39POS Enterprise from your computer and delete installed program files and shortcuts.
+        </p>
+
+        <div class="neu-inset" style="padding: 8px 14px; font-size: 11px; font-family: monospace; color: var(--text-secondary); width: 100%; word-break: break-all;" id="current-install-dir">
+          Locating install path...
+        </div>
+      </div>
+
+      <div class="config-group">
+        <div class="neu-raised-sm toggle-option" id="opt-keep-db">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600;">
+            <span>💾</span>
+            <span>Preserve local database & backup cache</span>
+          </div>
+          <div class="neu-checkbox checked" id="chk-keep-db">✓</div>
+        </div>
+        <div class="neu-raised-sm toggle-option" id="opt-shortcuts">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600;">
+            <span>🧹</span>
+            <span>Remove desktop & start menu shortcuts</span>
+          </div>
+          <div class="neu-checkbox checked" id="chk-shortcuts">✓</div>
+        </div>
+      </div>
+
+      <div class="wizard-footer">
+        <button class="neu-btn" id="btn-cancel">Cancel</button>
+        <button class="neu-btn neu-btn-danger" id="btn-start-uninstall">
+          <span>Uninstall Now</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2: Progress -->
+    <section class="step-pane" id="step-2">
+      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        <div class="warn-orb" style="font-size: 24px; width: 64px; height: 64px; border-radius: 18px;" id="un-percent">0%</div>
+        <h2 style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Removing Application...</h2>
+        <p style="font-size: 12px; color: var(--text-secondary);" id="un-status-text">Closing running background services...</p>
+
+        <div class="progress-track" style="width: 100%; max-width: 480px;">
+          <div class="progress-fill" id="un-progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3: Complete -->
+    <section class="step-pane" id="step-3">
+      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+        <div class="warn-orb" style="background: linear-gradient(135deg, #10b981, #059669); font-size: 36px; box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);">✓</div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">Uninstalled Successfully</h2>
+        <p style="font-size: 13px; color: var(--text-secondary); max-width: 380px; margin-bottom: 20px;">
+          39POS Enterprise has been completely removed from your system.
+        </p>
+      </div>
+
+      <div class="wizard-footer" style="justify-content: flex-end;">
+        <button class="neu-btn neu-btn-primary" id="btn-finish-uninstall">Finish</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="uninstaller.js"></script>
+</body>
+</html>
