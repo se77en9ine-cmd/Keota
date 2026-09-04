@@ -11,19 +11,49 @@
   <header class="titlebar">
     <div class="titlebar-brand">
       <div class="titlebar-logo-mini">✕</div>
-      <span>39POS Enterprise — Uninstaller</span>
+      <span id="txt-titlebar">39POS Enterprise — Uninstaller</span>
     </div>
-    <button class="win-btn" id="btn-close" title="Close">✕</button>
+    <div class="titlebar-actions">
+      <!-- Multi-Language Switcher -->
+      <div class="lang-selector-wrap">
+        <button class="lang-btn" id="btn-lang-toggle" aria-label="Select Language">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span id="current-lang-label">English</span>
+          <span style="font-size: 8px;">▼</span>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown-menu">
+          <div class="lang-item active" data-lang="en"><span>🇬🇧</span> English</div>
+          <div class="lang-item" data-lang="la"><span>🇱🇦</span> ພາສາລາວ</div>
+          <div class="lang-item" data-lang="th"><span>🇹🇭</span> ภาษาไทย</div>
+          <div class="lang-item" data-lang="zh"><span>🇨🇳</span> 简体中文</div>
+          <div class="lang-item" data-lang="jp"><span>🇯🇵</span> 日本語</div>
+        </div>
+      </div>
+
+      <button class="win-btn" id="btn-close" title="Close" aria-label="Close Window">✕</button>
+    </div>
   </header>
 
   <!-- Main Container -->
   <main class="app-container">
     <!-- STEP 1: Confirm Removal -->
     <section class="step-pane active" id="step-1">
-      <div class="neu-raised" style="padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 16px;">
-        <div class="warn-orb">🗑</div>
-        <h1 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">Uninstall 39POS Enterprise?</h1>
-        <p style="font-size: 13px; color: var(--text-secondary); max-width: 440px; margin-bottom: 14px;">
+      <div class="neu-raised" style="padding: 22px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 14px;">
+        <div class="warn-orb">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </div>
+        <h1 style="font-size: 19px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px;" id="txt-confirm-title">Uninstall 39POS Enterprise?</h1>
+        <p style="font-size: 12.5px; color: var(--text-secondary); max-width: 440px; margin-bottom: 12px; line-height: 1.4;" id="txt-confirm-desc">
           This will remove 39POS Enterprise from your computer and delete installed program files and shortcuts.
         </p>
 
@@ -32,27 +62,40 @@
         </div>
       </div>
 
-      <div class="config-group">
-        <div class="neu-raised-sm toggle-option" id="opt-keep-db">
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600;">
-            <span>💾</span>
-            <span>Preserve local database & backup cache</span>
+      <div class="config-group" style="margin-bottom: 12px;">
+        <div class="neu-raised-sm toggle-option" id="opt-keep-db" role="checkbox" aria-checked="true" tabindex="0">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 600;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-emerald);">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            <span id="txt-opt-keepdb">Preserve local database & backup cache</span>
           </div>
           <div class="neu-checkbox checked" id="chk-keep-db">✓</div>
         </div>
-        <div class="neu-raised-sm toggle-option" id="opt-shortcuts">
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600;">
-            <span>🧹</span>
-            <span>Remove desktop & start menu shortcuts</span>
+        <div class="neu-raised-sm toggle-option" id="opt-shortcuts" role="checkbox" aria-checked="true" tabindex="0">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 600;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-rose);">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            </svg>
+            <span id="txt-opt-shortcuts">Remove desktop & start menu shortcuts</span>
           </div>
           <div class="neu-checkbox checked" id="chk-shortcuts">✓</div>
         </div>
       </div>
 
       <div class="wizard-footer">
-        <button class="neu-btn" id="btn-cancel">Cancel</button>
+        <button class="neu-btn" id="btn-cancel">
+          <span id="txt-btn-cancel">Cancel</span>
+        </button>
         <button class="neu-btn neu-btn-danger" id="btn-start-uninstall">
-          <span>Uninstall Now</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+          </svg>
+          <span id="txt-btn-uninstall">Uninstall Now</span>
         </button>
       </div>
     </section>
@@ -60,11 +103,11 @@
     <!-- STEP 2: Progress -->
     <section class="step-pane" id="step-2">
       <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-        <div class="warn-orb" style="font-size: 24px; width: 64px; height: 64px; border-radius: 18px;" id="un-percent">0%</div>
-        <h2 style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">Removing Application...</h2>
+        <div class="warn-orb" style="font-size: 20px; font-weight: 800; width: 64px; height: 64px; border-radius: 18px;" id="un-percent">0%</div>
+        <h2 style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;" id="txt-removing-title">Removing Application...</h2>
         <p style="font-size: 12px; color: var(--text-secondary);" id="un-status-text">Closing running background services...</p>
 
-        <div class="progress-track" style="width: 100%; max-width: 480px;">
+        <div class="progress-track" style="width: 100%; max-width: 460px;">
           <div class="progress-fill" id="un-progress-fill"></div>
         </div>
       </div>
@@ -73,15 +116,21 @@
     <!-- STEP 3: Complete -->
     <section class="step-pane" id="step-3">
       <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-        <div class="warn-orb" style="background: linear-gradient(135deg, #10b981, #059669); font-size: 36px; box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);">✓</div>
-        <h2 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">Uninstalled Successfully</h2>
-        <p style="font-size: 13px; color: var(--text-secondary); max-width: 380px; margin-bottom: 20px;">
+        <div class="warn-orb" style="background: linear-gradient(135deg, var(--accent-emerald), var(--accent-emerald-dark)); box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 style="font-size: 21px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px;" id="txt-success-title">Uninstalled Successfully</h2>
+        <p style="font-size: 12.5px; color: var(--text-secondary); max-width: 400px; margin-bottom: 18px; line-height: 1.4;" id="txt-success-desc">
           39POS Enterprise has been completely removed from your system.
         </p>
       </div>
 
       <div class="wizard-footer" style="justify-content: flex-end;">
-        <button class="neu-btn neu-btn-primary" id="btn-finish-uninstall">Finish</button>
+        <button class="neu-btn neu-btn-primary" id="btn-finish-uninstall">
+          <span id="txt-btn-finish">Finish</span>
+        </button>
       </div>
     </section>
   </main>

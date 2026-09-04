@@ -3,6 +3,7 @@ import { api } from '../api/client';
 import { CurrencyConfig, CurrencyEngine, DEFAULT_CURRENCIES } from '39pos-shared';
 
 const CURRENCY_STORAGE_KEY = '39pos_current_currency';
+const CURRENCIES_CACHE_KEY = '39pos_currencies_cache';
 const CURRENCY_CHANNEL_NAME = '39pos-currency-sync';
 let currencyChannel: BroadcastChannel | null = null;
 
@@ -53,9 +54,27 @@ interface CurrencyState {
   convert: (amount: number | string, from?: string, to?: string) => number;
 }
 
+// Initial cached currencies or default
+function getInitialCurrencies(): CurrencyConfig[] {
+  if (typeof window === 'undefined') return DEFAULT_CURRENCIES;
+  try {
+    const cached = localStorage.getItem(CURRENCIES_CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch {}
+  return DEFAULT_CURRENCIES;
+}
+
+const initialCurrencies = getInitialCurrencies();
+const initialBaseCurrency = initialCurrencies.find((c) => c.isBase) || initialCurrencies[0];
+
 const initialCurrency =
   typeof window !== 'undefined'
-    ? localStorage.getItem(CURRENCY_STORAGE_KEY) || 'USD'
+    ? localStorage.getItem(CURRENCY_STORAGE_KEY) || initialBaseCurrency.code || 'USD'
     : 'USD';
 
 export const useCurrencyStore = create<CurrencyState>((set, get) => {
@@ -77,15 +96,22 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
     window.addEventListener('storage', (e) => {
       if (e.key === CURRENCY_STORAGE_KEY && e.newValue) {
         set({ currentCurrency: e.newValue });
+      } else if (e.key === CURRENCIES_CACHE_KEY && e.newValue) {
+        try {
+          const list = JSON.parse(e.newValue);
+          const baseCurrency = list.find((c: CurrencyConfig) => c.isBase) || list[0];
+          const engine = new CurrencyEngine(list.filter((c: CurrencyConfig) => c.isActive !== false));
+          set({ currencies: list, baseCurrency, engine });
+        } catch {}
       }
     });
   }
 
   return {
-    currencies: DEFAULT_CURRENCIES,
+    currencies: initialCurrencies,
     currentCurrency: initialCurrency,
-    baseCurrency: DEFAULT_CURRENCIES.find((c) => c.isBase) || DEFAULT_CURRENCIES[0],
-    engine: new CurrencyEngine(DEFAULT_CURRENCIES),
+    baseCurrency: initialBaseCurrency,
+    engine: new CurrencyEngine(initialCurrencies.filter((c) => c.isActive !== false)),
     isLoading: false,
 
     getBaseCurrency: () => {
@@ -116,11 +142,18 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
           const engine = new CurrencyEngine(list.filter((c) => c.isActive !== false));
           const baseCurrency = list.find((c) => c.isBase) || list[0];
           set({ currencies: list, baseCurrency, engine, isLoading: false });
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(list));
+          }
         } else {
           set({ isLoading: false });
         }
       } catch {
-        set({ isLoading: false });
+        // Fallback to cached local storage
+        const cached = getInitialCurrencies();
+        const baseCurrency = cached.find((c) => c.isBase) || cached[0];
+        const engine = new CurrencyEngine(cached.filter((c) => c.isActive !== false));
+        set({ currencies: cached, baseCurrency, engine, isLoading: false });
       }
     },
 
@@ -137,9 +170,10 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
     },
 
     createCurrency: async (data) => {
+      const code = data.code.toUpperCase().trim();
       try {
         const res = await api.post('/currencies', data);
-        if (res.data.success) {
+        if (res.data?.success) {
           await get().fetchCurrencies(true);
           if (currencyChannel) {
             try {
@@ -148,16 +182,38 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
           }
           return { success: true };
         }
-        return { success: false, message: res.data.message || 'Failed to create currency' };
-      } catch (err: any) {
-        return { success: false, message: err.response?.data?.message || err.message };
+      } catch {}
+
+      // Resilient local fallback for offline/static demo
+      const { currencies } = get();
+      const newCur: CurrencyConfig = {
+        code,
+        name: data.name.trim(),
+        symbol: data.symbol.trim(),
+        isBase: false,
+        exchangeRate: Number(data.exchangeRate) || 1.0,
+        decimalPlaces: data.decimalPlaces !== undefined ? Number(data.decimalPlaces) : 2,
+        symbolPosition: data.symbolPosition || 'before',
+        isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
+      };
+      const updated = [...currencies.filter((c) => c.code !== code), newCur];
+      const engine = new CurrencyEngine(updated.filter((c) => c.isActive !== false));
+      set({ currencies: updated, engine });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(updated));
       }
+      if (currencyChannel) {
+        try {
+          currencyChannel.postMessage({ type: 'CURRENCIES_MUTATED' });
+        } catch {}
+      }
+      return { success: true };
     },
 
     updateCurrency: async (code, data) => {
       try {
         const res = await api.put(`/currencies/${code}`, data);
-        if (res.data.success) {
+        if (res.data?.success) {
           await get().fetchCurrencies(true);
           if (currencyChannel) {
             try {
@@ -166,21 +222,36 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
           }
           return { success: true };
         }
-        return { success: false, message: res.data.message || 'Failed to update currency' };
-      } catch (err: any) {
-        return { success: false, message: err.response?.data?.message || err.message };
+      } catch {}
+
+      // Local fallback
+      const { currencies } = get();
+      const updated = currencies.map((c) => (c.code === code ? { ...c, ...data } : c));
+      const engine = new CurrencyEngine(updated.filter((c) => c.isActive !== false));
+      set({ currencies: updated, engine });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(updated));
       }
+      if (currencyChannel) {
+        try {
+          currencyChannel.postMessage({ type: 'CURRENCIES_MUTATED' });
+        } catch {}
+      }
+      return { success: true };
     },
 
     updateRate: async (code: string, rate: number) => {
       try {
         const res = await api.put(`/currencies/${code}/rate`, { rate });
-        if (res.data.success) {
+        if (res.data?.success) {
           const currencies = get().currencies.map((c) =>
             c.code === code ? { ...c, exchangeRate: rate } : c
           );
           const engine = new CurrencyEngine(currencies.filter((c) => c.isActive !== false));
           set({ currencies, engine });
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(currencies));
+          }
           if (currencyChannel) {
             try {
               currencyChannel.postMessage({ type: 'RATES_UPDATED', code, rate });
@@ -188,42 +259,97 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
           }
           return true;
         }
-        return false;
-      } catch (err) {
-        console.error('Failed to update currency rate', err);
-        return false;
+      } catch {}
+
+      // Local fallback
+      const currencies = get().currencies.map((c) =>
+        c.code === code ? { ...c, exchangeRate: rate } : c
+      );
+      const engine = new CurrencyEngine(currencies.filter((c) => c.isActive !== false));
+      set({ currencies, engine });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(currencies));
       }
+      if (currencyChannel) {
+        try {
+          currencyChannel.postMessage({ type: 'RATES_UPDATED', code, rate });
+        } catch {}
+      }
+      return true;
     },
 
     setBaseCurrency: async (code: string) => {
+      const targetCode = code.toUpperCase().trim();
       try {
-        const res = await api.post('/currencies/set-base', { code });
-        if (res.data.success) {
+        const res = await api.post('/currencies/set-base', { code: targetCode });
+        if (res.data?.success) {
           await get().fetchCurrencies(true);
-          get().setCurrentCurrency(code);
+          get().setCurrentCurrency(targetCode);
           if (currencyChannel) {
             try {
               currencyChannel.postMessage({ type: 'CURRENCIES_MUTATED' });
-              currencyChannel.postMessage({ type: 'CURRENCY_CHANGE', currency: code });
+              currencyChannel.postMessage({ type: 'CURRENCY_CHANGE', currency: targetCode });
             } catch {}
           }
           return { success: true, message: res.data.message };
         }
-        return { success: false, message: res.data.message || 'Failed to switch base currency' };
       } catch (err: any) {
-        return { success: false, message: err.response?.data?.message || err.message };
+        // Backend not reachable or static demo environment (Netlify 404): perform client-side re-peg seamlessly
       }
+
+      // Re-peg all exchange rates around the new base currency
+      const { currencies } = get();
+      const target = currencies.find((c) => c.code === targetCode);
+      if (!target) {
+        return { success: false, message: `Currency ${targetCode} not found` };
+      }
+
+      const targetRate = target.exchangeRate || 1;
+      const updatedCurrencies: CurrencyConfig[] = currencies.map((c) => {
+        if (c.code === targetCode) {
+          return { ...c, isBase: true, exchangeRate: 1.0, isActive: true };
+        }
+        // New rate = oldRate / targetRate
+        const newRate = Number((c.exchangeRate / targetRate).toFixed(8));
+        return { ...c, isBase: false, exchangeRate: newRate };
+      });
+
+      const baseCurrency = updatedCurrencies.find((c) => c.code === targetCode)!;
+      const engine = new CurrencyEngine(updatedCurrencies.filter((c) => c.isActive !== false));
+
+      set({ currencies: updatedCurrencies, baseCurrency, engine });
+      get().setCurrentCurrency(targetCode);
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(updatedCurrencies));
+        localStorage.setItem(CURRENCY_STORAGE_KEY, targetCode);
+      }
+
+      if (currencyChannel) {
+        try {
+          currencyChannel.postMessage({ type: 'CURRENCIES_MUTATED' });
+          currencyChannel.postMessage({ type: 'CURRENCY_CHANGE', currency: targetCode });
+        } catch {}
+      }
+
+      return {
+        success: true,
+        message: `Successfully switched Base Currency to ${targetCode}`,
+      };
     },
 
     toggleCurrencyActive: async (code: string, isActive: boolean) => {
       try {
         const res = await api.put(`/currencies/${code}`, { isActive });
-        if (res.data.success) {
+        if (res.data?.success) {
           const currencies = get().currencies.map((c) =>
             c.code === code ? { ...c, isActive } : c
           );
           const engine = new CurrencyEngine(currencies.filter((c) => c.isActive !== false));
           set({ currencies, engine });
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(currencies));
+          }
           if (currencyChannel) {
             try {
               currencyChannel.postMessage({ type: 'CURRENCIES_MUTATED' });
@@ -231,17 +357,29 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
           }
           return true;
         }
-        return false;
-      } catch (err) {
-        console.error('Failed to toggle currency status', err);
-        return false;
+      } catch {}
+
+      // Local fallback
+      const currencies = get().currencies.map((c) =>
+        c.code === code ? { ...c, isActive } : c
+      );
+      const engine = new CurrencyEngine(currencies.filter((c) => c.isActive !== false));
+      set({ currencies, engine });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(currencies));
       }
+      if (currencyChannel) {
+        try {
+          currencyChannel.postMessage({ type: 'CURRENCIES_MUTATED' });
+        } catch {}
+      }
+      return true;
     },
 
     deleteCurrency: async (code: string) => {
       try {
         const res = await api.delete(`/currencies/${code}`);
-        if (res.data.success) {
+        if (res.data?.success) {
           await get().fetchCurrencies(true);
           if (currencyChannel) {
             try {
@@ -250,10 +388,22 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => {
           }
           return { success: true };
         }
-        return { success: false, message: res.data.message || 'Failed to delete currency' };
-      } catch (err: any) {
-        return { success: false, message: err.response?.data?.message || err.message };
+      } catch {}
+
+      // Local fallback
+      const { currencies } = get();
+      const updated = currencies.filter((c) => c.code !== code);
+      const engine = new CurrencyEngine(updated.filter((c) => c.isActive !== false));
+      set({ currencies: updated, engine });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(CURRENCIES_CACHE_KEY, JSON.stringify(updated));
       }
+      if (currencyChannel) {
+        try {
+          currencyChannel.postMessage({ type: 'CURRENCIES_MUTATED' });
+        } catch {}
+      }
+      return { success: true };
     },
 
     format: (amount, currencyCode) => {

@@ -48,8 +48,15 @@ app.use(
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Static uploads directory
-app.use('/uploads', express.static(config.uploadsDir));
+// Static uploads directory with 30-day browser caching
+app.use(
+  '/uploads',
+  express.static(config.uploadsDir, {
+    maxAge: '30d',
+    etag: true,
+    lastModified: true,
+  })
+);
 
 // Health Check
 app.get('/api/health', (_req, res) => {
@@ -115,8 +122,20 @@ function findClientDistPath(): string | null {
 const clientDistPath = findClientDistPath();
 
 if (clientDistPath) {
-  // Serve static files with proper MIME handling
-  app.use(express.static(clientDistPath));
+  // Serve static files with 1-year immutable caching for hashed bundles, no-cache for index.html
+  app.use(
+    express.static(clientDistPath, {
+      maxAge: '1y',
+      immutable: true,
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('index.html')) {
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        }
+      },
+    })
+  );
 
   // SPA fallback for React Router navigation
   app.get('*', (req, res, next) => {
@@ -125,6 +144,7 @@ if (clientDistPath) {
     }
     const indexPath = path.join(clientDistPath, 'index.html');
     if (fs.existsSync(indexPath)) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.sendFile(indexPath);
     } else {
       res.status(404).send('39POS Client index.html not found.');

@@ -11,20 +11,43 @@
   <header class="titlebar">
     <div class="titlebar-brand">
       <div class="titlebar-logo-mini">39</div>
-      <span>39POS Enterprise — Setup Wizard</span>
+      <span id="txt-titlebar">39POS Enterprise — Setup Wizard</span>
     </div>
-    <div class="titlebar-controls">
-      <button class="win-btn" id="btn-minimize" title="Minimize">─</button>
-      <button class="win-btn close" id="btn-close" title="Close">✕</button>
+    <div class="titlebar-actions">
+      <!-- Multi-Language Switcher -->
+      <div class="lang-selector-wrap">
+        <button class="lang-btn" id="btn-lang-toggle" aria-label="Select Language">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span id="current-lang-label">English</span>
+          <span style="font-size: 8px;">▼</span>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown-menu">
+          <div class="lang-item active" data-lang="en"><span>🇬🇧</span> English</div>
+          <div class="lang-item" data-lang="la"><span>🇱🇦</span> ພາສາລາວ</div>
+          <div class="lang-item" data-lang="th"><span>🇹🇭</span> ภาษาไทย</div>
+          <div class="lang-item" data-lang="zh"><span>🇨🇳</span> 简体中文</div>
+          <div class="lang-item" data-lang="jp"><span>🇯🇵</span> 日本語</div>
+        </div>
+      </div>
+
+      <!-- Window Minimize / Close -->
+      <div class="titlebar-controls">
+        <button class="win-btn" id="btn-minimize" title="Minimize" aria-label="Minimize Window">─</button>
+        <button class="win-btn close" id="btn-close" title="Close" aria-label="Close Window">✕</button>
+      </div>
     </div>
   </header>
 
   <!-- Main Container -->
   <main class="app-container">
     <!-- Stepper Navigation -->
-    <nav class="stepper-nav" id="stepper-nav">
+    <nav class="stepper-nav" id="stepper-nav" aria-label="Installation Steps">
       <div class="step-dot-wrap">
-        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-dot active" id="dot-1" aria-current="step">1</div>
         <div class="step-line" id="line-1"></div>
       </div>
       <div class="step-dot-wrap">
@@ -46,36 +69,51 @@
         <div class="logo-orb">
           <span>39</span>
         </div>
-        <h1 class="app-title">39POS Enterprise</h1>
+        <h1 class="app-title" id="txt-app-title">39POS Enterprise</h1>
         <div class="app-badge">
           <span>●</span>
-          <span>Online Platform Edition — v1.0.0</span>
+          <span id="txt-app-badge">Online Platform Edition — v1.0.0</span>
         </div>
         <div class="feature-grid">
           <div class="neu-raised-sm feature-pill">
-            <div class="feature-icon">☁</div>
-            <div class="feature-title">Cloud Sync</div>
-            <div class="feature-desc">Real-time store & multi-branch synchronisation</div>
+            <div class="feature-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+              </svg>
+            </div>
+            <div class="feature-title" id="txt-feat-cloud-title">Cloud Sync</div>
+            <div class="feature-desc" id="txt-feat-cloud-desc">Real-time store & multi-branch synchronisation</div>
           </div>
           <div class="neu-raised-sm feature-pill">
-            <div class="feature-icon">⚡</div>
-            <div class="feature-title">Ultra Fast POS</div>
-            <div class="feature-desc">Dual screen & hardware printer acceleration</div>
+            <div class="feature-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </div>
+            <div class="feature-title" id="txt-feat-fast-title">Ultra Fast POS</div>
+            <div class="feature-desc" id="txt-feat-fast-desc">Dual screen & hardware printer acceleration</div>
           </div>
           <div class="neu-raised-sm feature-pill">
-            <div class="feature-icon">🛡</div>
-            <div class="feature-title">Offline Safe</div>
-            <div class="feature-desc">Continuous sales even during network outage</div>
+            <div class="feature-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <div class="feature-title" id="txt-feat-offline-title">Offline Safe</div>
+            <div class="feature-desc" id="txt-feat-offline-desc">Continuous sales even during network outage</div>
           </div>
         </div>
       </div>
 
       <div class="wizard-footer">
-        <span style="font-size: 11px; color: var(--text-muted);">Ready to configure installation</span>
+        <span style="font-size: 11.5px; color: var(--text-muted);" id="txt-footer-step1">Ready to configure installation</span>
         <div class="btn-row">
           <button class="neu-btn neu-btn-primary" id="btn-next-1">
-            <span>Continue</span>
-            <span>➔</span>
+            <span id="txt-btn-continue">Continue</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
           </button>
         </div>
       </div>
@@ -85,55 +123,78 @@
     <section class="step-pane" id="step-2">
       <div class="config-group">
         <div class="config-label">
-          <span>Installation Directory</span>
-          <span style="font-weight: 500; color: var(--text-muted);">Local Program Files</span>
+          <span id="txt-label-dir">Installation Directory</span>
+          <span style="font-weight: 500; font-size: 11px; color: var(--text-muted);" id="txt-label-local">Local Program Files</span>
         </div>
         <div class="neu-inset path-input-row">
-          <input type="text" class="path-input" id="input-install-path" spellcheck="false" />
-          <button class="neu-btn neu-raised-sm" id="btn-browse" style="padding: 8px 16px; margin: 4px; font-size: 12px;">Browse...</button>
+          <input type="text" class="path-input" id="input-install-path" spellcheck="false" aria-label="Installation Path" />
+          <button class="neu-btn neu-raised-sm" id="btn-browse" style="padding: 7px 14px; font-size: 11.5px;">
+            <span id="txt-btn-browse">Browse...</span>
+          </button>
         </div>
       </div>
 
       <div class="config-group">
         <div class="config-label">
-          <span>Shortcut & Integration Options</span>
+          <span id="txt-label-shortcuts">Shortcut & Integration Options</span>
         </div>
-        <div class="neu-raised-sm toggle-option" id="opt-desktop">
+        <div class="neu-raised-sm toggle-option" id="opt-desktop" role="checkbox" aria-checked="true" tabindex="0">
           <div class="toggle-label">
-            <span>🖥</span>
-            <span>Create Desktop Shortcut</span>
+            <span class="toggle-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </span>
+            <span id="txt-opt-desktop">Create Desktop Shortcut</span>
           </div>
           <div class="neu-checkbox checked" id="chk-desktop">✓</div>
         </div>
-        <div class="neu-raised-sm toggle-option" id="opt-startmenu">
+        <div class="neu-raised-sm toggle-option" id="opt-startmenu" role="checkbox" aria-checked="true" tabindex="0">
           <div class="toggle-label">
-            <span>📂</span>
-            <span>Create Start Menu Shortcut</span>
+            <span class="toggle-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path>
+              </svg>
+            </span>
+            <span id="txt-opt-startmenu">Create Start Menu Shortcut</span>
           </div>
           <div class="neu-checkbox checked" id="chk-startmenu">✓</div>
         </div>
-        <div class="neu-raised-sm toggle-option" id="opt-autostart">
+        <div class="neu-raised-sm toggle-option" id="opt-autostart" role="checkbox" aria-checked="false" tabindex="0">
           <div class="toggle-label">
-            <span>⚡</span>
-            <span>Launch automatically on Windows startup</span>
+            <span class="toggle-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+            </span>
+            <span id="txt-opt-autostart">Launch automatically on Windows startup</span>
           </div>
           <div class="neu-checkbox" id="chk-autostart"></div>
         </div>
       </div>
 
       <div class="neu-inset disk-meter">
-        <span>💾 Disk Space Required: <strong>~350 MB</strong></span>
-        <span id="disk-available">Available: <strong>Drive Ready</strong></span>
+        <span id="txt-disk-req">💾 Disk Space Required: <strong>~350 MB</strong></span>
+        <span class="disk-pill" id="disk-available">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span id="txt-disk-status">Drive Ready</span>
+        </span>
       </div>
 
       <div class="wizard-footer">
         <button class="neu-btn" id="btn-back-2">
-          <span>Back</span>
+          <span id="txt-btn-back">Back</span>
         </button>
         <div class="btn-row">
           <button class="neu-btn neu-btn-primary" id="btn-install-now">
-            <span>Install Now</span>
-            <span>⚡</span>
+            <span id="txt-btn-install">Install Now</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
           </button>
         </div>
       </div>
@@ -147,51 +208,62 @@
         </div>
 
         <div class="progress-track-wrapper">
-          <div class="progress-track">
+          <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
             <div class="progress-fill" id="progress-fill"></div>
           </div>
         </div>
 
         <div class="neu-inset status-log-box">
-          <span style="color: var(--accent-cyan);">●</span>
+          <div class="status-indicator-dot"></div>
           <span id="status-log-text">Initializing extraction engine...</span>
         </div>
 
-        <div class="neu-raised-sm" style="margin-top: 18px; padding: 12px 20px; text-align: center; width: 100%;">
-          <div style="font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;" id="tip-title">⚡ High-Speed POS Ready</div>
-          <div style="font-size: 11px; color: var(--text-secondary);" id="tip-desc">39POS provides offline-resilient local SQLite and seamless cloud Postgres synchronisation.</div>
+        <div class="neu-raised-sm tip-card">
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px;" id="tip-title">⚡ High-Speed POS Ready</div>
+          <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.35;" id="tip-desc">39POS provides offline-resilient local SQLite and seamless cloud Postgres synchronisation.</div>
         </div>
       </div>
 
       <div class="wizard-footer" style="justify-content: center;">
-        <span style="font-size: 11px; color: var(--text-muted);">Please wait while 39POS Enterprise is being configured...</span>
+        <span style="font-size: 11.5px; color: var(--text-muted);" id="txt-progress-footer">Please wait while 39POS Enterprise is being configured...</span>
       </div>
     </section>
 
     <!-- STEP 4: Success & Launch -->
     <section class="step-pane" id="step-4">
       <div class="success-container">
-        <div class="success-badge">✓</div>
-        <h2 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px;">Installation Completed!</h2>
-        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 18px; max-width: 380px;">
+        <div class="success-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 style="font-size: 21px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px;" id="txt-success-title">Installation Completed!</h2>
+        <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 16px; max-width: 420px; line-height: 1.4;" id="txt-success-desc">
           39POS Enterprise (Online Platform v1.0.0) has been installed and configured successfully on your system.
         </p>
 
-        <div class="neu-inset" style="padding: 10px 16px; font-size: 11px; font-family: monospace; color: var(--text-secondary); margin-bottom: 20px; max-width: 440px; word-break: break-all;" id="final-install-path">
+        <div class="neu-inset" style="padding: 9px 14px; font-size: 11px; font-family: monospace; color: var(--text-secondary); margin-bottom: 16px; max-width: 480px; word-break: break-all;" id="final-install-path">
           C:\Users\...\AppData\Local\Programs\39POS Enterprise
         </div>
       </div>
 
       <div class="wizard-footer">
         <button class="neu-btn" id="btn-open-folder" style="font-size: 12px;">
-          <span>Open Folder</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path>
+          </svg>
+          <span id="txt-btn-openfolder">Open Folder</span>
         </button>
         <div class="btn-row">
           <button class="neu-btn" id="btn-finish-close">
-            <span>Close</span>
+            <span id="txt-btn-close">Close</span>
           </button>
           <button class="neu-btn neu-btn-primary" id="btn-launch-app">
-            <span>🚀 Launch 39POS Now</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 14 4-4"></path>
+              <path d="M3.34 19a10 10 0 1 1 17.32 0"></path>
+            </svg>
+            <span id="txt-btn-launch">Launch 39POS Now</span>
           </button>
         </div>
       </div>

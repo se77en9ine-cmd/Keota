@@ -5,10 +5,19 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>39POS — Online Platform POS & Delivery Hub</title>
-    <!-- Google Fonts for Multi-Language Support -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Roboto+Condensed:wght@300..900&family=Noto+Sans+Lao:wght@100..900&family=Noto+Sans+Lao+Looped:wght@100..900&family=Noto+Sans+Thai:wght@100..900&family=Noto+Serif+JP:wght@400..900&family=Noto+Serif+SC:wght@400..900&display=swap" rel="stylesheet">
+    
+    <!-- Performance Optimization: Resource Hints & Font Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    
+    <!-- Google Fonts with display=swap to prevent render blocking -->
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=Roboto+Condensed:wght@300..900&family=Noto+Sans+Lao:wght@100..900&family=Noto+Sans+Lao+Looped:wght@100..900&family=Noto+Sans+Thai:wght@100..900&family=Noto+Serif+JP:wght@400..900&family=Noto+Serif+SC:wght@400..900&display=swap" 
+      rel="stylesheet"
+    />
+    
     <style>
       :root {
         --app-font: 'Arial Narrow', 'Roboto Condensed', 'Noto Sans Lao', 'Noto Sans Thai Light', 'Noto Sans Thai', 'Noto Serif Japanese', 'Noto Serif JP', 'Noto Serif Simplified Chinese', 'Noto Serif SC', sans-serif;
@@ -21,7 +30,6 @@
         padding: 0;
       }
     </style>
-
   </head>
   <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
     <div id="root"></div>
